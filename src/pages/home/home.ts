@@ -23,6 +23,12 @@ export class HomePage {
   info;
   imageLocation;
 
+  type;
+  costPrice; 
+  weeklySales;
+  seasonSales;
+  monthlySales;
+
   lastImage: string = null;
   loading: Loading;
 
@@ -52,14 +58,6 @@ export class HomePage {
       this.picture = 'data:image/jpeg;base64,' + imageData;
       this.info = 'Image Captured';
       console.log('Capture image success');
-
-      /*var fileNamePrefix = this.createFileName();
-      this.base64ToGallery.base64ToGallery(imageData).then(
-        res => {this.info = 'saved image' + res},
-        err => {this.info = 'failed to save image' + err}
-      );
-      */
-    
       
       var headers = {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -68,16 +66,16 @@ export class HomePage {
       var postData = {
         "image" : imageData 
       };
-      //this.http.setHeader('mimetype', 'multipart/form-data');
       this.http.post('http://35.193.71.148/mobile/upload', postData, headers)
       .then(data => {
 
         console.log(data.status);
         console.log(data.data); // data received by server
         console.log(data.headers);
-        this.info = data.data;
+        var uploadResponse = JSON.parse(data.data);
+        this.info = "Uploaded file. Name : " + uploadResponse.file_name;
         this.imageLocation = this.picture; 
-        /*var json = JSON.parse(data.data);
+        var json = JSON.parse(data.data);
         var uploadedFileName = json.file_name;
 
         var similarUrl = 'http://35.193.71.148/mobile/similar?file_name=' + uploadedFileName;
@@ -86,29 +84,28 @@ export class HomePage {
         .then(data => {
       
           var respsonseSimilar = JSON.parse(data.data);
-          var similarUrl = respsonseSimilar.url[1];
-          this.imageLocation = similarUrl;
+          var similarUrl = respsonseSimilar.url[0];
+          this.type = 'Category : ' + respsonseSimilar.type;
+          this.costPrice = 'Cost price : ' + '100'; 
+          this.weeklySales = 'Weekly sales : '+ '200';
+          this.seasonSales = 'Season sales : ' + '300';
+          this.monthlySales = 'Monthly sales: ' + '400';
+          this.imageLocation = 'http://35.193.71.148/' + similarUrl;
         })
         .catch(error => {
-      
           console.log(error.status);
           console.log(error.error); // error message as string
           console.log(error.headers);
-      
+          this.info = 'errror : ' + error + 'error status : ' + error.status + ' error message : ' + error.error;
         });
-        */
-
       })
       .catch(error => {
-
         console.log(error.status);
         console.log(error.error); // error message as string
         console.log(error.headers);
         this.info = 'errror : ' + error + 'error status : ' + error.status + ' error message : ' + error.error;
-
       });
-
-    }, (err) => {
+    }, (err) => { 
       console.log('Capture image failed');
       console.log(err);
     });
@@ -251,5 +248,19 @@ public pathForImage(img) {
     });
   }
 
+ public closeDiv(){
+
+  this.info = '';
+  this.imageLocation = '';
+  this.type = '';
+  this.costPrice = ''; 
+  this.weeklySales = '';
+  this.seasonSales = '';
+  this.monthlySales = '';
+  }
+
+  public switchCamera(){
+    this.cameraPreview.switchCamera();
+  }
   
 }
