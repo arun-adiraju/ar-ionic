@@ -250,7 +250,7 @@ public pathForImage(img) {
 
  public closeDiv(){
 
-  this.info = '';
+  this.info = 'Capture Image';
   this.imageLocation = '';
   this.type = '';
   this.costPrice = ''; 
